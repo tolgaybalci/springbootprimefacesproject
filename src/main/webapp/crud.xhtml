@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+</h:head>
+
+<h:body>
+  <p:ajaxStatus onstart="PF('statusDialog').show()"
+                onsuccess="PF('statusDialog').hide()" />
+
+  <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+            closable="false" resizable="false" showHeader="false">
+    <p:graphicImage name="images/ajaxloadingbar.gif" />
+  </p:dialog>
+
+  <h:form id="form_product">
+
+    <p:messages id="messages" showDetail="true" closable="true">
+      <p:autoUpdate />
+    </p:messages>
+
+    <!--<p:inputText type="hidden" value="#{productController.product.id}" />-->
+    <p:panelGrid columns="2">
+      <p:column>
+        <p:outputLabel value="ID" />
+      </p:column>
+      <p:column>
+        <p:inputText disabled="true" value="#{productController.product.id}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="CODE" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.code}" required="true" />
+      </p:column>
+      <p:column>
+        <p:outputLabel value="NAME" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.name}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="DESCRIPTION" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.description}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="IMAGE" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.image}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="PRICE" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.price}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="CATEGORY" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.category}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="QUANTITY" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.quantity}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="STATUS" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.status}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:outputLabel value="RATINGS" />
+      </p:column>
+      <p:column>
+        <p:inputText value="#{productController.product.rating}" required="true"/>
+      </p:column>
+      <p:column>
+        <p:commandButton
+                value="New"
+                icon="fa fa-fw fa-plus"
+                update="form_product"
+                action="#{productController.save}"
+                styleClass="ui-button-success" />
+      </p:column>
+      <p:column>
+        <p:commandButton
+                value="Save"
+                icon="fa fa-fw fa-save"
+                update="form_product"
+                action="#{productController.save}"
+                styleClass="ui-button-info"/>
+      </p:column>
+    </p:panelGrid>
+
+    <p:dataTable id="table_product"
+                 var="product"
+                 value="#{productController.products}"
+                 rows="10" paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}
+                 {RowsPerPageDropdown} {Exporters}"
+                 rowsPerPageTemplate="5,10,15,25">
+
+      <h:panelGrid columns="2">
+      <p:panel header="{Exporters}">
+        <img alt="exportExcel" src="../resources/images/excel.png" />
+      </p:panel>
+      </h:panelGrid>
+      <p:column headerText="Id">
+        <h:outputText value="#{product.id}" />
+      </p:column>
+
+      <p:column headerText="Code">
+        <h:outputText value="#{product.code}" />
+      </p:column>
+
+      <p:column headerText="Name">
+        <h:outputText value="#{product.name}" />
+      </p:column>
+
+      <p:column headerText="Description">
+        <h:outputText value="#{product.description}" />
+      </p:column>
+
+      <p:column headerText="Image">
+        <h:outputText value="#{product.image}" />
+      </p:column>
+
+      <p:column headerText="Price">
+        <h:outputText value="#{product.price}" />
+      </p:column>
+
+      <p:column headerText="Category">
+        <h:outputText value="#{product.category}" />
+      </p:column>
+
+      <p:column headerText="Quantity">
+        <h:outputText value="#{product.quantity}" />
+      </p:column>
+
+      <p:column headerText="Status">
+        <h:outputText value="#{product.status}" />
+      </p:column>
+
+      <p:column headerText="Ratings">
+        <h:outputText value="#{product.rating}" />
+      </p:column>
+
+      <p:column headerText="Actions">
+        <p:commandButton
+                title="Edit"
+                update="form_product"
+                icon="pi pi-refresh"
+                process="@this"
+                styleClass="ui-button-secondary">
+          <f:setPropertyActionListener target="#{productController.product}"
+                                       value="#{product}" />
+          <p:confirm header="Confirmation" message="Düzenleme yapmak istediğinize emin misiniz?"
+                     icon="pi pi-exclamation-triangle" />
+        </p:commandButton>
+
+        <p:commandButton
+                action="#{productController.delete}"
+                update="form_product"
+                icon="pi pi-trash"
+                immediate="true"
+                styleClass="ui-button-danger">
+          <f:setPropertyActionListener target="#{productController.product}"
+                                       value="#{product}" />
+          <p:confirm header="Confirmation" message="Silmek istediğinize emin misiniz?"
+                     icon="pi pi-exclamation-triangle" />
+        </p:commandButton>
+
+        <p:column style="width:10%;text-align: center" headerText="Actions" exportable="false">
+          <p:commandButton update="form_product" oncomplete="PF('statusDialog').show()"
+                           icon="pi pi-search"
+                           immediate="true"
+                           styleClass="ui-button-success"
+                           title="Search">
+            <f:setPropertyActionListener value="#{product}" target="#{productController.product}"/>
+          </p:commandButton>
+        </p:column>
+      </p:column>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+          <p:commandButton value="Yes" type="button"
+                           styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+          <p:commandButton value="No" type="button"
+                           styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+        </p:confirmDialog>
+    </p:dataTable>
+
+    <p:dialog header="Search" widgetVar="statusDialog" modal="true" showEffect="fade" hideEffect="fade"
+                       resizable="false">
+      <p:outputPanel id="Detail" style="position:center;">
+      <p:panelGrid columns="2" rendered="#{not empty productController.product}" columnClasses="label,value">
+        <f:facet name="header">
+          <h:outputLabel>Product</h:outputLabel>
+        </f:facet>
+
+        <h:outputText value="Id"/>
+        <h:inputText value="#{productController.product.id}" disabled="#{true}"/>
+
+        <h:outputText value="Code"/>
+        <h:inputText value="#{productController.product.code}" disabled="true"/>
+
+        <h:outputText value="Name"/>
+        <h:inputText value="#{productController.product.name}" disabled="true"/>
+
+        <h:outputText value="Description"/>
+        <h:inputText value="#{productController.product.description}" disabled="true"/>
+
+        <h:outputText value="Image"/>
+        <h:inputText value="#{productController.product.image}" disabled="true"/>
+
+        <h:outputText value="Price"/>
+        <h:inputText value="#{productController.product.price}" disabled="true"/>
+
+        <h:outputText value="Category"/>
+        <h:inputText value="#{productController.product.category}" disabled="true"/>
+
+        <h:outputText value="Quantity"/>
+        <h:inputText value="#{productController.product.quantity}" disabled="true"/>
+
+        <h:outputText value="Status"/>
+        <h:outputText value="#{productController.product.status}" disabled="true"/>
+
+        <h:outputText value="Ratings"/>
+        <h:outputText value="#{productController.product.rating}" disabled="true"/>
+
+      </p:panelGrid>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+          <p:commandButton value="Yes" type="button"
+                           styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+          <p:commandButton value="No" type="button"
+                           styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+
+          <br></br>
+          <p:button id="Close" style="position:center;" styleClass="ui-button-info" value="Close" icon="pi pi-times"/>
+
+      </p:outputPanel>
+  </p:dialog>
+
+  </h:form>
+
+</h:body>
+</html>
